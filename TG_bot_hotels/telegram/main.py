@@ -11,7 +11,7 @@ from rooms import get_rooms_count, get_adults, get_children, room_1, room_2, roo
 from cities import get_country, countries_info
 from categories_menu import select_search_category, make_request, get_hotels, show_hotels_info, convert_user_input
 from low_high_commands import chose_parameter
-from telebot.types import WebAppInfo
+from telebot.types import WebAppInfo, ReplyKeyboardMarkup
 
 
 # States storage
@@ -26,6 +26,9 @@ bot = telebot.TeleBot("6438255358:AAGTFH3DZJS5uubvj7Y26w0UIEZXLATzzsg",
 
 user_data = [{'checkInDate': None}, {'checkOutDate': None}, {'rooms': None}, {'city': None}]
 hotels = []
+
+
+# https://olegmatsnev.github.io/TeleBot/TG_bot_hotels/telegram/index.html
 
 
 @bot.message_handler(commands=['start'])
@@ -146,6 +149,10 @@ def search_category(callback):
         user_data = convert_user_input(user_data)
 
     select_search_category(callback=callback)
+
+
+"""Commands"""
+
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('command_'))
