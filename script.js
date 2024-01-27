@@ -7,6 +7,7 @@ let priceGap = 100; // (1) - let
 const stars = document.querySelectorAll("button");
 const radioButtons = document.querySelectorAll('input[name="guestRating"]');
 
+let tg = window.Telegram.WebApp;
 let chosenStar = 2;
 let chosenRating = "any";
 let finishButton = document.querySelector("#ready");
@@ -81,10 +82,12 @@ radioButtons.forEach(radioButton => {
 });
 
 finishButton.addEventListener("click", () => {
-  console.log("min price: " + priceInput[0].value);
-  console.log("max price: " + priceInput[1].value);
-  console.log("stars count: " + chosenStar);
-  console.log("guest rating: " + chosenRating);
+//  console.log("min price: " + priceInput[0].value);
+//  console.log("max price: " + priceInput[1].value);
+//  console.log("stars count: " + chosenStar);
+//  console.log("guest rating: " + chosenRating);
+    tg.close();
+
 })
 
 // (0): querySelector: Document метод querySelector() возвращает первый элемент (Element) документа,

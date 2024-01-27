@@ -28,12 +28,15 @@ user_data = [{'checkInDate': None}, {'checkOutDate': None}, {'rooms': None}, {'c
 hotels = []
 
 
-# https://olegmatsnev.github.io/TeleBot/TG_bot_hotels/telegram/index.html
+# https://olegmatsnev.github.io/TeleBot/index.html
 
 
 @bot.message_handler(commands=['start'])
 def start_ex(message):
     print('start_ex')
+
+
+
     markup = types.InlineKeyboardMarkup()
     item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
     item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
