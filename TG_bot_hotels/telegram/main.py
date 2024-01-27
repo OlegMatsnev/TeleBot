@@ -35,32 +35,25 @@ hotels = []
 @bot.message_handler(commands=['start'])
 def start_ex(message):
     print('start_ex')
-    markup = types.ReplyKeyboardMarkup()
-    markup.add(types.KeyboardButton('Открыть веб страницу', web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')))
+
+    markup = types.InlineKeyboardMarkup()
+
+    # Добавляем кнопку "Открыть веб страницу" с URL-адресом
+    web_app_button = types.InlineKeyboardButton("Открыть веб страницу",
+                                                url='https://olegmatsnev.github.io/TeleBot/index.html')
+
+    markup.add(web_app_button)
+
+    # Отправляем сообщение с инлайн-клавиатурой
+    bot.send_message(message.chat.id, "Выберите действие:", reply_markup=markup)
 
 
-    # markup = types.InlineKeyboardMarkup()
-    # item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
-    # item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
-    # item3 = types.InlineKeyboardButton("Web", web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html'))
-    # markup.row(item1, item2, item3)
-    # item4 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
-    # markup.row(item4)
-    #
-    # bot.send_photo(message.chat.id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
-    #                caption=f'Добро пожаловать, {message.from_user.first_name} {message.from_user.last_name}! 👋',
-    #                reply_markup=markup)
-
-
-"""Arrival data"""
-@bot.message_handler(func=lambda message: True)
-def handle_messages(message):
-    try:
-        # Пытаемся распарсить текст сообщения как JSON
-        data = json.loads(message.text)
-        print("Received data:", data)
-    except json.JSONDecodeError:
-        print("Received non-JSON message:", message.text)
+@bot.message_handler(content_types="web_app_data") #получаем отправленные данные
+def answer(webAppMes):
+   print(webAppMes) #вся информация о сообщении
+   print(webAppMes.web_app_data.data) #конкретно то что мы передали в бота
+   bot.send_message(webAppMes.chat.id, f"получили инофрмацию из веб-приложения: {webAppMes.web_app_data.data}")
+   #отправляем сообщение в ответ на отправку данных из веб-приложения
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'search_hotels')

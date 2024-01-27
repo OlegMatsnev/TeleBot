@@ -94,7 +94,7 @@ finishButton.addEventListener("click", () => {
         starsNum: chosenStar,
         guestRating: chosenRating
     }
-    tg.sendMessage('YourTelegramBotUsername', JSON.stringify(data));
+    tg.sendData(JSON.stringify(data))
     tg.close();
 })
 
