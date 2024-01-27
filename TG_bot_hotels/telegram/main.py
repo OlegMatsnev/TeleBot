@@ -1,4 +1,5 @@
 import telebot  # telebot
+from pydantic import json
 from telebot import custom_filters
 from telebot.handler_backends import State, StatesGroup  # States
 from telebot import types
@@ -34,23 +35,32 @@ hotels = []
 @bot.message_handler(commands=['start'])
 def start_ex(message):
     print('start_ex')
+    markup = types.ReplyKeyboardMarkup()
+    markup.add(types.KeyboardButton('Открыть веб страницу', web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')))
 
 
-
-    markup = types.InlineKeyboardMarkup()
-    item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
-    item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
-    item3 = types.InlineKeyboardButton("Web", web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html'))
-    markup.row(item1, item2, item3)
-    item4 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
-    markup.row(item4)
-
-    bot.send_photo(message.chat.id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
-                   caption=f'Добро пожаловать, {message.from_user.first_name} {message.from_user.last_name}! 👋',
-                   reply_markup=markup)
+    # markup = types.InlineKeyboardMarkup()
+    # item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
+    # item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
+    # item3 = types.InlineKeyboardButton("Web", web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html'))
+    # markup.row(item1, item2, item3)
+    # item4 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
+    # markup.row(item4)
+    #
+    # bot.send_photo(message.chat.id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
+    #                caption=f'Добро пожаловать, {message.from_user.first_name} {message.from_user.last_name}! 👋',
+    #                reply_markup=markup)
 
 
 """Arrival data"""
+@bot.message_handler(func=lambda message: True)
+def handle_messages(message):
+    try:
+        # Пытаемся распарсить текст сообщения как JSON
+        data = json.loads(message.text)
+        print("Received data:", data)
+    except json.JSONDecodeError:
+        print("Received non-JSON message:", message.text)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'search_hotels')

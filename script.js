@@ -86,8 +86,16 @@ finishButton.addEventListener("click", () => {
 //  console.log("stars count: " + chosenStar);
 //  console.log("guest rating: " + chosenRating);
     let tg = window.Telegram.WebApp;
-    tg.close();
+    tg.expand();
 
+    let data {
+        minPrice: priceInput[0].value,
+        maxPrice: priceInput[1].value,
+        starsNum: chosenStar,
+        guestRating: chosenRating
+    }
+    tg.sendMessage('YourTelegramBotUsername', JSON.stringify(data));
+    tg.close();
 })
 
 // (0): querySelector: Document метод querySelector() возвращает первый элемент (Element) документа,
