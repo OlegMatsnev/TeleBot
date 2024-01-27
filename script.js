@@ -88,7 +88,7 @@ finishButton.addEventListener("click", () => {
     let tg = window.Telegram.WebApp;
     tg.expand();
 
-    let data {
+    let data = {
         minPrice: priceInput[0].value,
         maxPrice: priceInput[1].value,
         starsNum: chosenStar,
