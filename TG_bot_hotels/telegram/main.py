@@ -37,7 +37,7 @@ def start_ex(message):
     markup = types.InlineKeyboardMarkup()
     item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
     item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
-    item3 = types.InlineKeyboardButton("Web", web_app=WebAppInfo(url='https://olegmatsnev.github.io/Telegram-bot/TG_bot_hotels/telegram/index.html'))
+    item3 = types.InlineKeyboardButton("Web", web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html'))
     markup.row(item1, item2, item3)
     item4 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
     markup.row(item4)
