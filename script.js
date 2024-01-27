@@ -7,7 +7,6 @@ let priceGap = 100; // (1) - let
 const stars = document.querySelectorAll("button");
 const radioButtons = document.querySelectorAll('input[name="guestRating"]');
 
-let tg = window.Telegram.WebApp;
 let chosenStar = 2;
 let chosenRating = "any";
 let finishButton = document.querySelector("#ready");
@@ -86,6 +85,7 @@ finishButton.addEventListener("click", () => {
 //  console.log("max price: " + priceInput[1].value);
 //  console.log("stars count: " + chosenStar);
 //  console.log("guest rating: " + chosenRating);
+    let tg = window.Telegram.WebApp;
     tg.close();
 
 })
