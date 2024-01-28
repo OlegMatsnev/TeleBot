@@ -3,6 +3,22 @@ from TG_bot_hotels.hotels_site_API.utils.requests.API_datas_connection.site_api_
 
 get_hotels = site_api.get_hotels()
 
+
+def correct_filter_data(filter_data: dict):
+    stars_list = []
+    min_star = filter_data["star"]
+    if min_star == 2:
+        stars_list = ["20", "30", "40", "50"]
+    elif min_star == 3:
+        stars_list = ["30", "40", "50"]
+    elif min_star == 4:
+        stars_list = ["40", "50"]
+    elif min_star == 5:
+        stars_list = ["50"]
+
+    filter_data["star"] = stars_list
+
+
 def custom(data_list: list, filter_data: dict, count_hotels=7):
     """
         Основная функция для выбора отелей на основе пользовательских критериев.

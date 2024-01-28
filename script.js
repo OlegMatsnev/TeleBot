@@ -90,8 +90,8 @@ finishButton.addEventListener("click", () => {
 
     let data = {
         price: {
-            minPrice: parseInt(priceInput[0].value),
-            maxPrice: parseInt(priceInput[1].value)
+            max: parseInt(priceInput[1].value),
+            min: parseInt(priceInput[0].value)
         },
         star: chosenStar,
         guestRating: chosenRating

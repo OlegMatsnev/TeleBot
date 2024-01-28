@@ -188,7 +188,8 @@ def custom_message(callback):
 
     markup = types.ReplyKeyboardMarkup()
     markup.add(types.KeyboardButton('Открыть веб страницу',
-                                    web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')))
+                                    web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')),
+               types.KeyboardButton("Пусто"))
 
     global delete_message
     delete_message = bot.send_photo(chat_id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
