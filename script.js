@@ -89,9 +89,11 @@ finishButton.addEventListener("click", () => {
     tg.expand();
 
     let data = {
-        minPrice: priceInput[0].value,
-        maxPrice: priceInput[1].value,
-        starsNum: chosenStar,
+        price: {
+            minPrice: parseInt(priceInput[0].value),
+            maxPrice: parseInt(priceInput[1].value)
+        },
+        star: chosenStar,
         guestRating: chosenRating
     }
     tg.sendData(JSON.stringify(data))

@@ -3,6 +3,7 @@ from pydantic import json
 from telebot import custom_filters
 from telebot.handler_backends import State, StatesGroup  # States
 from telebot import types
+from telebot.types import ReplyKeyboardRemove
 
 from TG_bot_hotels.hotels_site_API.utils.hotel import Hotel
 from my_calendar import Calendar
@@ -11,9 +12,7 @@ from data_keyboards import get_departure_year, get_departure_month, get_departur
 from rooms import get_rooms_count, get_adults, get_children, room_1, room_2, room_3
 from cities import get_country, countries_info
 from categories_menu import select_search_category, make_request, get_hotels, show_hotels_info, convert_user_input
-from low_high_commands import chose_parameter
 from telebot.types import WebAppInfo, ReplyKeyboardMarkup
-
 
 # States storage
 from telebot.storage import StateMemoryStorage
@@ -28,6 +27,8 @@ bot = telebot.TeleBot("6438255358:AAGTFH3DZJS5uubvj7Y26w0UIEZXLATzzsg",
 user_data = [{'checkInDate': None}, {'checkOutDate': None}, {'rooms': None}, {'city': None}]
 hotels = []
 
+delete_message = None
+
 
 # https://olegmatsnev.github.io/TeleBot/index.html
 
@@ -35,30 +36,32 @@ hotels = []
 @bot.message_handler(commands=['start'])
 def start_ex(message):
     print('start_ex')
-    markup = types.ReplyKeyboardMarkup()
-    markup.add(types.KeyboardButton('Открыть веб страницу', web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')))
-    bot.send_message(message.chat.id, "Выберите действие:", reply_markup=markup)
 
-    # markup = types.InlineKeyboardMarkup()
-    # item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
-    # item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
+    markup = types.InlineKeyboardMarkup()
+    item1 = types.InlineKeyboardButton("Инструкция", callback_data='instruction')
+    item2 = types.InlineKeyboardButton("Сайт", callback_data='website')
     # item3 = types.InlineKeyboardButton("Web", web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html'))
-    # markup.row(item1, item2, item3)
-    # item4 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
-    # markup.row(item4)
-    #
-    # bot.send_photo(message.chat.id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
-    #                caption=f'Добро пожаловать, {message.from_user.first_name} {message.from_user.last_name}! 👋',
-    #                reply_markup=markup)
+    markup.row(item1, item2)
+    item4 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
+    markup.row(item4)
+
+    bot.send_photo(message.chat.id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
+                   caption=f'Добро пожаловать, {message.from_user.first_name} {message.from_user.last_name}! 👋',
+                   reply_markup=markup)
 
 
 """Arrival data"""
-@bot.message_handler(content_types="web_app_data") #получаем отправленные данные
+
+
+@bot.message_handler(content_types="web_app_data")  # получаем отправленные данные
 def answer(webAppMes):
-   print(webAppMes) #вся информация о сообщении
-   print(webAppMes.web_app_data.data) #конкретно то что мы передали в бота
-   bot.send_message(webAppMes.chat.id, f"получили инофрмацию из веб-приложения: {webAppMes.web_app_data.data}")
-   #отправляем сообщение в ответ на отправку данных из веб-приложения
+
+    print(delete_message)
+    print(webAppMes)  # вся информация о сообщении
+    print(webAppMes.web_app_data.data)  # конкретно то что мы передали в бота
+    bot.delete_message(webAppMes.chat.id, delete_message.id)
+    bot.send_message(webAppMes.chat.id, f"получили инофрмацию из веб-приложения: {webAppMes.web_app_data.data}")
+    # отправляем сообщение в ответ на отправку данных из веб-приложения
 
 
 @bot.callback_query_handler(func=lambda call: call.data == 'search_hotels')
@@ -129,7 +132,6 @@ def room_children_count(callback):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('cont_'))
 def chose_country(callback):
-
     if callback.data.split('_')[1].isdigit():
         last_children_room_filling = callback.data.split('_')[1]
         room_1['children'] = last_children_room_filling
@@ -149,7 +151,6 @@ def counties_info_menu(callback):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('city_'))
 def search_category(callback):
-
     global user_data
     if callback.data != 'city_':
         city = callback.data.split('_')[1]
@@ -165,7 +166,6 @@ def search_category(callback):
 """Commands"""
 
 
-
 @bot.callback_query_handler(func=lambda call: call.data.startswith('command_'))
 def search_category(callback):
     make_request(callback)
@@ -173,12 +173,27 @@ def search_category(callback):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('category_'))
 def show_hotels(callback):
-
     global hotels
     if len(callback.data.split('_')) == 3:
         hotels = get_hotels(callback=callback, user_input=user_data)
 
     show_hotels_info(callback, hotels)
+
+@bot.callback_query_handler(func=lambda call: call.data == "custom")
+def custom_message(callback):
+    chat_id = callback.message.chat.id
+    message_id = callback.message.message_id
+
+    bot.delete_message(chat_id=chat_id, message_id=message_id)
+
+    markup = types.ReplyKeyboardMarkup()
+    markup.add(types.KeyboardButton('Открыть веб страницу',
+                                    web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')))
+
+    global delete_message
+    delete_message = bot.send_photo(chat_id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
+                   caption="Нажмите кнопку под клавиатурой",
+                   reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -197,11 +212,20 @@ def callback_query(call):
         bot.edit_message_caption(caption='Это инструкция, здесь должен быть ваш текст инструкции.', chat_id=chat_id,
                                  reply_markup=markup, message_id=message_id)
     elif call.data == 'website':
-        markup = types.InlineKeyboardMarkup()
-        back_button = types.InlineKeyboardButton("Назад", callback_data='back')
-        markup.row(back_button)
-        bot.edit_message_caption(caption='Это ваш веб-сайт, здесь должен быть текст о сайте.', chat_id=chat_id,
-                                 reply_markup=markup, message_id=message_id)
+        custom_message(callback=call)
+        # bot.delete_message(chat_id=chat_id, message_id=message_id)
+        #
+        # markup = types.ReplyKeyboardMarkup()
+        # markup.add(types.KeyboardButton('Открыть веб страницу',
+        #                                 web_app=WebAppInfo(url='https://olegmatsnev.github.io/TeleBot/index.html')),
+        #            types.KeyboardButton('Пусто'))
+        # global message_global
+        # message_global = bot.send_photo(chat_id, 'https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg',
+        #                caption="Нажмите кнопку под клавиатурой",
+        #                reply_markup=markup)
+
+
+
 
     elif call.data == 'back':
         markup = types.InlineKeyboardMarkup()
@@ -210,17 +234,19 @@ def callback_query(call):
         markup.row(item1, item2)
         item3 = types.InlineKeyboardButton("Поиск отелей", callback_data='search_hotels')
         markup.row(item3)
-        bot.edit_message_media(media=types.InputMediaPhoto('https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg'),
-                               chat_id=chat_id, message_id=message_id)
+        bot.edit_message_media(
+            media=types.InputMediaPhoto('https://romani-hotel.ru/wp-content/uploads/2019/11/7380605_0x0.jpg'),
+            chat_id=chat_id, message_id=message_id)
         bot.edit_message_caption(caption='Главное меню.', chat_id=chat_id,
                                  reply_markup=markup, message_id=message_id)
+        # chat_id_text = bot.send_message(call.from_user.id, text="s", reply_markup=ReplyKeyboardRemove())
+        bot.delete_message(chat_id=chat_id, message_id=message_id)
 
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 bot.add_custom_filter(custom_filters.IsDigitFilter())
 
 bot.infinity_polling(skip_pending=True)
-
 
 # Дата отъезда {'year': 2024, 'month': 2, 'day': 14}
 # Дата приезда {'year': 2024, 'month': 2, 'day': 7}

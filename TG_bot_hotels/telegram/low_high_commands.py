@@ -1,13 +1,11 @@
 
 from telebot import types
-from telebot.types import InlineKeyboardButton
-
+from telebot.types import InlineKeyboardButton, WebAppInfo
 
 from TG_bot_hotels.hotels_site_API.utils.hotel import Hotel
 from bot_setup import bot
 from TG_bot_hotels.hotels_site_API.utils.requests.API_datas_connection.site_api_connector import url, headers, site_api
 from TG_bot_hotels.hotels_site_API.utils.hotel import Hotel
-
 
 get_hotels = site_api.get_hotels()
 
@@ -98,3 +96,7 @@ def chose_parameter(callback, category_str):
                              message_id=message_id,
                              chat_id=chat_id,
                              reply_markup=markup)
+
+
+
+

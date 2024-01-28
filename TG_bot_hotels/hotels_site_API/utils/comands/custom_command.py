@@ -101,6 +101,51 @@ def custom(data_list: list, count_hotels=5, price_filter=False, stars_filter=Fal
             stars_filter (bool): Фильтровать ли по количеству звёзд.
             pool_filter (bool): Фильтровать ли по наличию бассейна.
 
+        Ex:
+            {
+    "currency": "USD",
+    "eapid": 1,
+    "locale": "en_US",
+    "siteId": 300000001,
+    "destination": {
+        "regionId": "6054439"
+    },
+    "checkInDate": {
+        "day": 10,
+        "month": 10,
+        "year": 2022
+    },
+    "checkOutDate": {
+        "day": 15,
+        "month": 10,
+        "year": 2022
+    },
+    "rooms": [
+        {
+            "adults": 2,
+            "children": [
+                {
+                    "age": 5
+                },
+                {
+                    "age": 7
+                }
+            ]
+        }
+    ],
+    "resultsStartingIndex": 0,
+    "resultsSize": 200,
+    "sort": "PRICE_LOW_TO_HIGH",
+    "filters": {
+        "price": {
+            "max": 150,
+            "min": 100
+        },
+        "guestRating": "35",
+        "star": ["40","50"]
+    }
+}
+
         Returns:
             list[Hotel]: Список выбранных отелей.
         """

@@ -63,7 +63,7 @@ def select_search_category(callback):
 
     low_button = InlineKeyboardButton("low", callback_data="command_low")
     high_button = InlineKeyboardButton("high", callback_data="command_high")
-    custom_button = InlineKeyboardButton("custom", callback_data="command_custom")
+    custom_button = InlineKeyboardButton("custom", callback_data="custom")
     history_button = InlineKeyboardButton("history", callback_data="command_history")
     back_button = InlineKeyboardButton("Назад", callback_data='cont_')
 
@@ -136,8 +136,6 @@ def make_request(callback):
     if command == 'low' or command == 'high':
         chose_parameter(callback, command)
 
-    elif command == 'custom':
-        pass
 
     elif command == 'history':
         pass
